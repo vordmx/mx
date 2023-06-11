@@ -1,0 +1,1559 @@
+var msgERROR = "";
+var _elementoBloq = "";
+var bntDes = "";
+
+/************	variables para submit en paginacion		********************************/
+var _cmd = "";
+var _frm = "";
+var _idFrm = "";
+
+function classButton(boton, clase) {
+    	var btn = document.getElementById(boton);
+    	btn.className = clase;
+}
+
+var opcTablaSin = {
+				   "iDisplayLength": 20,
+                   "bAutoWidth": false,
+                   "bLengthChange": false,
+				   "bFilter": false,
+				   "bLengthChange": false,
+				   "bPaginate": false,
+				   "aaSorting": [ ], 
+				   "oLanguage": {
+								  "sInfo": " ",
+								  "sZeroRecords": " ",
+								  "sInfoEmpty": " "
+				   }							  							  						 
+};
+
+	            
+var opcTabla = {
+			 "iDisplayLength": 20,
+             "bAutoWidth": false,
+           	 "bLengthChange": false,
+			 "bFilter": false,
+			 "bSort": true,
+			 "aaSorting": [ ],
+			 "bPaginate": true, 
+			 "oLanguage": {
+			               "sInfo": " Mostrando registros (_START_ al _END_) de _TOTAL_ ",
+			               "sInfoFiltered": " - Filtrados de _MAX_ registros totales -",
+			               "sZeroRecords": "No existen registros. ",
+			               "sInfoEmpty": "Mostrando 0 de 0 registros"
+			              }
+			 									  							  						 
+};
+
+var opcTablaSucs = {
+			 "iDisplayLength": 5,
+             "bAutoWidth": false,
+           	 "bLengthChange": false,
+			 "bFilter": false,
+			 "bSort": false,
+			 "bPaginate": false,
+			 "oLanguage": {
+			               "sInfo": " ",
+			               "sInfoFiltered": " ",
+			               "sZeroRecords": " ",
+			               "sInfoEmpty": " "
+			              }		  							  						 
+};
+
+function muestraError(msg1){
+       var msg  = " Caja SMG.\n\n";
+       msg += "--------------------------------------------------------------------------------------------------------\n\n";
+       msg += msg1+"\n\n";
+       msg += "--------------------------------------------------------------------------------------------------------\n\n";
+       alert(msg); 
+}
+
+function muestraMSG(msg1){
+       var msg  = " Administraci\u00f3n .\n\n";
+       msg += "--------------------------------------------------------------------------------------------------------\n\n";
+       msg += msg1+"\n\n";
+       msg += "--------------------------------------------------------------------------------------------------------\n\n";
+       alert(msg); 
+}
+
+function validaEnter(){
+   	if( event.keyCode != 13 ){
+   		soloLetras(window.event);
+   	}
+}
+
+function doSomething(e) {
+	var code;
+	if (!e) var e = window.event;
+	if (e.keyCode) code = e.keyCode;
+	else if (e.which) code = e.which;
+	var character = String.fromCharCode(code);
+	//alert('Character was ' + character);
+ 	key = e.which;
+ 	//alert(key);
+ 	e.which=71;
+ 	if(key == 13){
+ 	   e.which = 0;
+ 	}
+ 	if (key > 0x60 && key < 0x7B){
+ 		e.which = key-0x20;
+ 	}
+}
+
+
+/*function doSomething(e) {
+	var targ;
+	if (!e) var e = window.event;
+	if (e.target) targ = e.target;
+	else if (e.srcElement) targ = e.srcElement;
+	if (targ.nodeType == 3) // defeat Safari bug
+		targ = targ.parentNode;
+		alert(targ);
+}*/
+
+/********** MGGD 01112010 ******/
+function checaTecla(){
+  try{
+  var alt = typeof event.modifiers == 'undefined' ?
+            event.altKey : event.modifiers & Event.ALT_MASK;
+  var f4 = typeof event.which == 'undefined' ?
+           event.keyCode == 115 : event.which == 115 ;
+  var izq = typeof event.which == 'undefined' ?
+           event.keyCode == 37 : event.which == 37 ;
+  var arr = typeof event.which == 'undefined' ?
+           event.keyCode == 38 : event.which == 38 ;
+  var der = typeof event.which == 'undefined' ?
+           event.keyCode == 39 : event.which == 39 ;
+  var abj = typeof event.which == 'undefined' ?
+           event.keyCode == 40 : event.which == 40 ;
+  var f5 = typeof event.which == 'undefined' ?
+           event.keyCode == 116 : event.which == 116 ;
+  if( alt && f4){
+    //alert("Esta Abandonando el sistema");
+    //SalirSistema('frm');
+  }
+
+  var e = event.srcElement.tagName;
+  if (window.event && window.event.keyCode == 8 && e != "INPUT" && e != "TEXTAREA") {
+    window.event.cancelBubble = true;
+    window.event.returnValue = false;
+    return false;
+  }
+
+  if( alt && (izq || arr  || der || abj)){
+    window.event.cancelBubble = true;
+    return false;
+  }
+
+  if(f5){
+    window.event.cancelBubble = true;
+    window.event.keyCode = 0;
+    return false;
+  }
+  return true;
+  }catch(e){}
+}
+
+document.onkeydown = checaTecla;
+
+function soloLetras(){
+	//alert(event.keyCode);
+	aMayusculas();
+ 	if (event.keyCode == 124 || event.keyCode == 34 || event.keyCode == 39 || event.keyCode == 44){
+ 		event.keyCode=0;
+	}
+
+}
+
+function muestraElem(id) {
+	document.getElementById(id).style.display = 'block';
+}
+function ocultaElem(id) {
+	document.getElementById(id).style.display = 'none';
+}
+
+/**
+funcion que cierra  cualquier elemento que se haya abierto en la pag principal (main)
+*/
+function cerrar(){
+	if(confirm('¿Est\u00E1 seguro que desea salir?')){
+      var divPrincipal = document.getElementById("_Contenedor");
+	  divPrincipal.innerHTML = "";
+	}   
+}
+  
+function salir(){
+	   var divPrincipal = document.getElementById("_Contenedor");
+	  divPrincipal.innerHTML = "";
+
+}  
+
+
+
+//----------------  Se utiliza para campos numericos  ----------------------------
+//pInput       -> Caja de texto
+//pDespliega   -> 0 - Valida / 1 - Valida y despliega
+//iEnteros     -> Número de enteros
+//iDecimal     -> Número de decimales
+function ValImporteEnt(pInput, pDespliega, iDecimal, iEnteros, iNegativo)
+{
+   var CadenaNumeros='0123456789.', EsteCaracter;
+   var Contador=0, Contadorp=0, Cadena='', Bnd=0;
+   var NumFor, Decimal=0,parizq='', parder, CtrImp, liSigno;
+   if (iDecimal>0) CadenaNumeros='0123456789.'; else CadenaNumeros='0123456789';
+   if (iNegativo==1) CadenaNumeros += '-';
+   if (pInput.value=='')   return(0);
+   for (var i=0; i < pInput.value.length; i++)
+   {
+      EsteCaracter = pInput.value.substring(i,i+1);
+      if (EsteCaracter=='.')
+      {
+         Decimal=Contador;
+         if (Decimal==0) Bnd=1;
+         Contadorp=Contadorp+1;
+      } else if ( EsteCaracter=='-' ) {
+         liSigno=1;
+      } else
+         Cadena=Cadena + EsteCaracter;
+      if (CadenaNumeros.indexOf(EsteCaracter) != -1)
+         Contador++;
+   }
+   if (  Contador != pInput.value.length  || Contadorp > 1 || ( parseFloat(pInput.value)<0 && liSigno==0 )) return(0);
+   if (liSigno==1) {
+     Contador--;
+     if (Decimal>0) Decimal--;
+   }
+   if (Decimal==0 && Bnd==0) Decimal=Contador;
+   if (Decimal-1==Cadena.length) parder=Cadena;
+   else {
+      parder=Cadena.substring(0, Decimal);
+      parizq=Cadena.substring(Decimal, Cadena.length);}
+   for (var n=0; n<parder.length; n++)
+      if  (parder.substring(n, n+1)!='0') break;
+   if (n>0) parder=parder.substring(n, parder.length);
+   if (parizq.length > iDecimal ){ //return(0);
+   	parizq= parizq.substring(0, iDecimal);
+   }
+   if (parder.length > iEnteros ){
+	   parder= parder.substring(0, iEnteros);
+   } //return(8);
+   var ndig=parder.length%3;
+   var ndig3=(parder.length-ndig)/3;
+   if (ndig>0){
+      NumFor='' + parder.substring(0,ndig);
+      if (ndig!=parder.length) NumFor = NumFor + ','}
+   else NumFor='';
+   for (i=0; i<=ndig3; i++){
+      NumFor=NumFor + parder.substring(ndig,ndig+3);
+      ndig=ndig+3;
+      if (ndig<parder.length)
+         NumFor=NumFor + ',';}
+   if (parder=='') NumFor=NumFor + '0';
+   if (iDecimal>0){
+      if (parizq=='') NumFor=NumFor + '.00';
+      else
+      {
+         NumFor=NumFor + '.' + parizq.substring(0,iDecimal);
+         if (parizq.length!=iDecimal) {
+            for ( i=0 ; i < (iDecimal-parizq.length) && i<6; i++)
+               NumFor=NumFor + '0';
+         }
+      }
+   }
+   if (liSigno==1) NumFor = '-' + NumFor;
+   if (pDespliega==1) pInput.value=NumFor;
+   return(1);
+}
+
+//----------------  Valida un campo fecha y le da formato adecuado  ----------------------------
+//pInput     -> Caja de texto
+//pDespliega -> 0 - Valida / 1 - Valida y despliega
+function ValFecha(pInput,pDespliega)
+{
+var Contador = 0, fectmp;
+var fecha=allTrim(pInput.value);
+	  
+	  if (fecha.length<=5)
+	  	return(0);     
+   else if (fecha.length==6)
+   	if (fecha.substring(4,6) < 50)
+     	fectmp = fecha.substring(0,4) + "20" + fecha.substring(4,6);
+     else
+     	fectmp = fecha.substring(0,4) + "19" + fecha.substring(4,6);
+   else if (fecha.length ==7)
+     	return(0);
+   else if (fecha.length ==8) 
+	   if (fecha.indexOf("/") != -1) {
+		   //Es el formato dd/mm/aa
+		    if (fecha.substring(6,8) < 50) {
+		    	ano = "20" + fecha.substring(6,8);
+		    } else {
+		    	ano = "19" + fecha.substring(6,8);
+		    }
+		    fectmp = fecha.substring(0,2) + fecha.substring(3,5) + ano;
+		    ano = "";
+	   } else {
+		   //Es el formato ddmmaaaa
+		   fectmp=fecha;
+	   }   	
+   else if (fecha.length==9)
+   		return(0);
+   else if (fecha.length==10)      		
+      	fectmp=fecha.substring(0,2) + fecha.substring(3,5) + fecha.substring(6,10);
+   
+   if (!ValInput(fectmp,1)) return(0);
+	      dia = fectmp.substring(0, 2);
+	      mes = fectmp.substring(2, 4);
+	      ano = fectmp.substring(4, 8);
+   
+   if (mes<1 || mes>12) return(0);
+   if (dia<1 || dia>31) return(0);
+   if (ano<1900) return(0);
+   if (mes==4 || mes==6 || mes==9 || mes==11)
+   {
+      if (dia==31) return(0);
+   }
+   if (mes==2)
+   {
+      var g=parseInt(ano/4);
+      if (isNaN(g)) return(0);
+      if (dia>29) return(0);
+      if (dia==29 && ((ano/4)!=parseInt(ano/4))) return(0);
+   }
+    
+   if (pDespliega==1)
+          pInput.value = dia + '/' + mes + '/' + ano;             
+
+   return(1);
+}
+//----------------  Valida el contenido de una caja de texto  ----------------------------
+//pInput  -> Caja de texto
+//pTpoVal -> 1 - Numeros / 2 - Numeros y punto / 3 - Alfanumerico
+function ValInput(pInput,pTpoVal)
+{
+var Contador=0, EsteCaracter, CadenaNumeros;
+if (pTpoVal==1)
+   CadenaNumeros='0123456789';
+if (pTpoVal==2)
+   CadenaNumeros='0123456789.';
+if (pTpoVal==3) // para letras de actualizacion de registros
+   CadenaNumeros='ABCD ';
+if (pTpoVal==4)
+   CadenaNumeros='0123456789abcdefghijklmnopqrstuvwyxz .';
+if (pTpoVal==5)
+   CadenaNumeros='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwyxz ';
+if (pTpoVal==6)
+   CadenaNumeros='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwyxzráéíóúÁÉÍÓÚ _';
+if (pTpoVal==7)
+   CadenaNumeros='0123456789,-';
+if (pTpoVal==8)
+   CadenaNumeros='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwyxz +-_.';
+if (pTpoVal==9)
+   CadenaNumeros='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwyxz';
+if (pTpoVal==10)
+   CadenaNumeros='0123456789-/';
+if (pTpoVal==11) // Para  Fórmulas
+   CadenaNumeros='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ ..,ñÑ()%#$=-><*+/\\';
+if (pTpoVal==12)
+   CadenaNumeros='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwyxzáéíóúÁÉÍÓÚ .';
+if (pTpoVal==13)
+   CadenaNumeros='0123456789.,';
+if (pTpoVal==14)
+   CadenaNumeros='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ .';
+if (pTpoVal==15)
+   CadenaNumeros='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwyxz';
+if (pTpoVal==16)
+   CadenaNumeros='0123456789ABCDEFGHIJKLMNÑOPQRSTUVWXYZabcdefghijklmnopqrstuvwyxz .,&*@#-_'; // Validaciones Solicitud
+if (pTpoVal==17)
+   CadenaNumeros='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ _.,()%=-><*+/\\';
+if (pTpoVal==18)
+   CadenaNumeros='0123456789ABCDEFGHIJKLMNÑOPQRSTUVWXYZÁÉÍÓÚÜ?# _.,;()%=-><*+/\\\n\r';//se agrego ';' a la 18 para etiquetas
+if (pTpoVal==19)
+   CadenaNumeros='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ _.,()%=-><*+/\\cdfls';
+if (pTpoVal==20)
+   CadenaNumeros='0123456789abcdefghijklmnopqrstuvwyxzABCDEFGHIJKLMNOPQRSTUVWXYZ_%:.=?&-/\\';
+if (pTpoVal==21)
+   CadenaNumeros='!#$%&()*+-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ [\]^_`abcdefghijklmnopqrstuvwxyz{|}~áéíóúÁÉÍÓÚüÜñÑ¿¡';
+if (pTpoVal==22)
+   CadenaNumeros='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwyxz_';
+if (pTpoVal==23)
+   CadenaNumeros='0123456789/';
+if (pTpoVal==24)
+   CadenaNumeros='0123456789- ';
+if (pTpoVal==25)
+   CadenaNumeros='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwyxzáéíóúÁÉÍÓÚ ().';
+if (pTpoVal==26)
+   CadenaNumeros='0123456789ABCDEFGHIJKLMNÑOPQRSTUVWXYZabcdefghijklmnñopqrstuvwyxz * \u00e1\u00e9\u00ed\u00f3\u00fa\u00c1\u00c9\u00cd\u00d3\u00da\u00d1\u00f1';   
+for (var i=0;i<pInput.length; i++)
+{
+   EsteCaracter = pInput.substring(i,i+1);
+   if (CadenaNumeros.indexOf(EsteCaracter)!=-1)
+      Contador++;
+}
+
+if (Contador != pInput.length)  return(0);
+else  return(1);
+}
+
+
+
+//----------------  Valida el contenido de una caja de texto  ----------------------------
+//pInput  -> Caja de texto
+//pTpoVal -> 1 - Numeros / 2 - Numeros y punto / 3 - Alfanumerico
+function quitarInvalidos(pInput,pTpoVal)
+{
+var Contador=0, EsteCaracter, CadenaNumeros, resultado = '';
+if (pTpoVal==1)
+   CadenaNumeros='0123456789';
+if (pTpoVal==2)
+   CadenaNumeros='0123456789.';
+if (pTpoVal==3) // para letras de actualizacion de registros
+   CadenaNumeros='ABCD ';
+if (pTpoVal==4)
+   CadenaNumeros='0123456789abcdefghijklmnopqrstuvwyxz .';
+if (pTpoVal==5)
+   CadenaNumeros='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwyxz ';
+if (pTpoVal==6)
+   CadenaNumeros='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwyxzráéíóúÁÉÍÓÚ _';
+if (pTpoVal==7)
+   CadenaNumeros='0123456789,-';
+if (pTpoVal==8)
+   CadenaNumeros='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwyxz +-_.';
+if (pTpoVal==9)
+   CadenaNumeros='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwyxz';
+if (pTpoVal==10)
+   CadenaNumeros='0123456789-/';
+if (pTpoVal==11) // Para  Fórmulas
+   CadenaNumeros='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ ..,ñÑ()%#$=-><*+/\\';
+if (pTpoVal==12)
+   CadenaNumeros='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwyxzáéíóúÁÉÍÓÚ .';
+if (pTpoVal==13)
+   CadenaNumeros='0123456789.,';
+if (pTpoVal==14)
+   CadenaNumeros='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ .';
+if (pTpoVal==15)
+   CadenaNumeros='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwyxz';
+if (pTpoVal==16)
+   CadenaNumeros='0123456789ABCDEFGHIJKLMNÑOPQRSTUVWXYZabcdefghijklmnopqrstuvwyxz .,&*@#-_'; // Validaciones Solicitud
+if (pTpoVal==17)
+   CadenaNumeros='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ _.,()%=-><*+/\\';
+if (pTpoVal==18)
+   CadenaNumeros='0123456789ABCDEFGHIJKLMNÑOPQRSTUVWXYZÁÉÍÓÚÜ?# _.,;()%=-><*+/\\\n\r';//se agrego ';' a la 18 para etiquetas
+if (pTpoVal==19)
+   CadenaNumeros='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ _.,()%=-><*+/\\cdfls';
+if (pTpoVal==20)
+   CadenaNumeros='0123456789abcdefghijklmnopqrstuvwyxzABCDEFGHIJKLMNOPQRSTUVWXYZ_%:.=?&-/\\';
+if (pTpoVal==21)
+   CadenaNumeros='!#$%&()*+-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ [\]^_`abcdefghijklmnopqrstuvwxyz{|}~áéíóúÁÉÍÓÚüÜñÑ¿¡';
+if (pTpoVal==22)
+   CadenaNumeros='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwyxz_';
+if (pTpoVal==23)
+   CadenaNumeros='0123456789/';
+if (pTpoVal==24)
+   CadenaNumeros='0123456789- ';
+if (pTpoVal==25)
+   CadenaNumeros='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwyxz-/';
+if (pTpoVal==26)
+   CadenaNumeros="0123456789?¡¿!#$%&{}[]<>+*|°¬@()ª\·~¬='Ç`^¨´,.;:-_\"";
+if (pTpoVal==27)
+   CadenaNumeros="?¡¿!#$%&{}[]<>+*|°¬@()ª\·~¬='Ç`^¨´,.;:-_\"";
+for (var i=0;i<pInput.length; i++)
+{
+   EsteCaracter = pInput.substring(i,i+1);
+  
+   if (CadenaNumeros.indexOf(EsteCaracter)!=-1)
+      resultado += EsteCaracter;
+}
+
+return resultado;
+}
+
+//----------------  Elimina los espacios de una cadena  ----------------------------
+function fTrim(sCadena)
+{
+	while( sCadena.length > 0 && ''+sCadena.charAt(0)==' ' ){
+		  if( sCadena.length == 1 ){
+		  	sCadena = '';
+		  }else{
+	   	sCadena=sCadena.substring(1,sCadena.length);
+	   }
+	}
+	while( sCadena.length > 0 && ''+sCadena.charAt(sCadena.length-1)==' '){
+	   sCadena=sCadena.substring(0,sCadena.length-1);
+	}
+	return sCadena;
+}
+
+
+//------------- regresa la fecha actual  en formato dd/mm/yy
+function getFechaActual(){
+	var mydate = new Date();
+    var year   = mydate.getYear();
+    var day	   = mydate.getDay();
+    var month  = mydate.getMonth()+1;
+    var daym   = mydate.getDate();
+
+    //year -= 2000;
+    if (month < 10) month = "0" + month;
+    if (daym < 10) daym = "0" + daym;
+    if (year < 10) year = "0" + year;
+
+    return daym + "/" + month + "/" + year;
+}
+
+
+// ---------  Retira de una caja de texto caracteres no validos  -----------------
+// pInput  -> Caja de texto
+// Tipo    -> 1 - Numeros / 2 - Alfanumerico y punto
+function QuitaCaracteres(pInput,pCadCar,pDespliega)
+{
+   var EsteCaracter,Cadena='';
+   for (var i=0;i<pInput.value.length;i++)
+   {
+      EsteCaracter = pInput.value.substring(i,i+1);
+      if (pCadCar.indexOf(EsteCaracter)==-1)
+         Cadena=Cadena + EsteCaracter;
+   }
+   if (pDespliega==1) pInput.value=Cadena;
+   else return(Cadena);
+}
+
+// ----------------  Se utiliza para campos numericos  ----------------------------
+// pInput       -> Caja de texto
+// iPierdeFoco  -> 0 - Pierde el foco / 1 - Optiene el foco
+// iEnteros     -> Número de enteros
+// iDecimal     -> Número de decimales
+function FocoCampo(pInput,iPierdeFoco,iDecimal,iEnteros, iNegativo){
+   if (iPierdeFoco == 0)
+      QuitaCaracteres(pInput,"$,",1);
+   else
+      ValImporteEnt(pInput,1,iDecimal,iEnteros,iNegativo);
+
+}
+
+
+// ValidaCampos(pNombre, pCampo, pTipo, pEnteros, pDecimales, pRequerido)
+// pNombre del campo
+// pCampo -> Caja de Texto
+// pTipo  -> 1-Numerico / 2-Punto Flotante / 3-Caracteres / 4 - Caracteres Ext /5-Fechas / 6 - Caracteres Captura solicitud
+// pEnteros   -> Enteros
+// pDecimales -> Decimales
+// pRequerido -> 0-No / 1-Si Msg += ValidaCampos('COM. VEND',pForma.CAMPO539,2,2,4,0);
+function ValidaCampos(pNombre, pCampo, pTipo, pEnteros, pDecimales, pRequerido){
+  var Msg='';
+  var pValida = false;
+  var temp = pCampo;
+
+ if(pRequerido == 1){
+ 	if(allTrim(pCampo.value) == ''){
+		Msg += pNombre + ' debe tener un valor\r';
+ 	}else{
+ 		pValida= true;
+ 	}
+ }else{
+ 	if(pCampo.value.length > 0){
+ 			pValida= true;
+ 	}
+ }
+  
+  pCampo.value 	= allTrim(pCampo.value);
+  // Validaciones
+  if ( pValida==true ) {
+    if ( pTipo==1 ) {
+      if (ValInput (pCampo.value, 1) == 0) {
+        Msg += pNombre + ' debe tener solo n\u00FAmeros\r';
+      }
+    } else if ( pTipo==2 ) {
+      var ent;      
+      if ( fTrim(pCampo.value)!="") {
+      	ent = ValImporteEnt (pCampo,0,pDecimales,pEnteros,0 );
+      	if ( ent == 0)
+        	Msg += pNombre + ' debe tener '+pEnteros+' enteros y '+pDecimales+' decimales como m\u00E1ximo.\r';
+        if ( ent == 8)
+        	Msg += pNombre + ''+pEnteros+' enteros como m\u00E1ximo.\r';
+      }
+    } else if ( pTipo==3 ){
+      if (ValInput (pCampo.value, 5) == 0) {
+        Msg += pNombre + ' no v\u00E1lido\r';
+      }
+    } else if ( pTipo==4 ){
+      if (ValInput (pCampo.value, 8) == 0) {
+        Msg += pNombre + ' no v\u00E1lido\r';
+      }
+    } else if ( pTipo==6 ) {
+       if (ValInput (pCampo.value, 16) == 0) {
+          Msg += pNombre + ' no v\u00E1lido\r';
+       }
+    } else if ( pTipo==7 ) {
+       if (quitarInvalidos(pCampo.value, 26) != '') {
+       	  var Caracter = quitarInvalidos(pCampo.value, 26);
+          Msg += pNombre + ' no v\u00E1lido' + "\r";
+    }
+    } else if ( pTipo==8 ) {
+       if (quitarInvalidos(pCampo.value, 27) != '') {
+       	  var Caracter = quitarInvalidos(pCampo.value, 26);
+          Msg += pNombre + ' no v\u00E1lido' + "\r";
+    }   
+    }else if( pTipo == 103 ) {//fecha
+    	if (ValInput (pCampo.value, 23) == 0){
+    		Msg += "Formato de fecha no v\u00E1lido.(dd/mm/aaaa)\r";
+        }else if(ValFecha(pCampo,1)== 0){
+            Msg += "Por favor digite un valor de " + pNombre + " v\u00E1lida.\r";
+        }
+    }else if( pTipo == 104 ) {//quita
+       var pCadCar = "_/-:.,;abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'?¡¿!#$%&{}[]<>+*|°¬@()\"";//fecha
+       QuitaCaracteres(pCampo,pCadCar,1);
+    }else if( pTipo==105 ) {//quita
+       var pCadCar = "_/-:,;abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'?¡¿!#$%&{}[]<>+*|°¬@()\"ª\·~¬='Ç`^¨´,;:-_";//importes
+       QuitaCaracteres(pCampo,pCadCar,1);
+    }if ( pTipo==106 ) {
+      if (ValInput (pCampo.value, 24) == 0) {
+        Msg += pNombre + ' inv\u00E1lido\r';
+      }
+    }else if( pTipo == 107 ) {//quita
+       if (ValInput (pCampo.value, 1) == 0)
+        Msg += pNombre + ' debe tener solo valores numericos.\r';
+       var pCadCar = "_/-:.,;abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'?¡¿!#$%&{}[]<>+*|°¬@()\"";//numerico
+       QuitaCaracteres(pCampo,pCadCar,1);
+
+       if(temp.value.length != pCampo.value.length )
+         Msg += pNombre + ' debe tener solo valores numericos.\r';
+    }else if( pTipo==108 ) {//quita
+       var pCadCar = "_-:.,;abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'?¡¿!#$%&{}[]<>+*|°¬@()";//expediente
+       QuitaCaracteres(pCampo,pCadCar,1);
+
+       if(temp.value.length != pCampo.value.length )
+         Msg += pNombre + ' no v\u00E1lida.\r';
+
+    }else if( pTipo == 109 ) {//quita
+       var pCadCar = "?¡¿!#$%&{}[]<>+*|°¬@()ª\·~¬='Ç`^¨´,.;:-_\"";//
+
+       QuitaCaracteres(pCampo,pCadCar,1);
+       if(temp.value.length != pCampo.value.length )
+         Msg += pNombre + ' no v\u00E1lida.\r';
+    }else if( pTipo == 110 ) {//sisc
+       var pCadCar = "?¡¿!#$%&{}[]<>+*|°¬@()ª\·~¬='Ç`^¨´";//
+
+       QuitaCaracteres(pCampo,pCadCar,1);
+       if(temp.value.length != pCampo.value.length )
+         Msg += pNombre + ' no v\u00E1lida.\r';
+    }else if ( pTipo==111 ) {
+      var pCadCar = "_/-:,;abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZ'?¡¿!#$%&{}[]<>+*|°¬@()\"ª\·~¬='Ç`^¨´,;:-_áéíóúÁÉÍÓÚüÜ";//importes
+      QuitaCaracteres(pCampo,pCadCar,1);
+    }
+  }
+  return Msg;
+}
+
+
+/*	
+	funcion que elimina de un campo de texto algun texto invalido 
+*/
+function JSLimpiaTexto(LsControl){
+	var Tempo = '';	
+		Tempo = LsControl.value;		
+		Tempo = Tempo.replace(/\>/g,"");
+		Tempo = Tempo.replace(/\</g,"");
+		Tempo = Tempo.replace(/\https/g,"");
+		Tempo = Tempo.replace(/\http/g,"");
+		Tempo = Tempo.replace(/\ftp/g,"");
+		Tempo = Tempo.replace(/\cgi/g,"");
+		Tempo = Tempo.replace(/\.jsp/g,"");
+		Tempo = Tempo.replace(/\.exe/g,"");
+		Tempo = Tempo.replace(/\script/g,"");
+		Tempo = Tempo.replace(/\function/g,"");
+		Tempo = Tempo.replace(/\input/g,"");
+		Tempo = Tempo.replace(/\where/g,"");
+		Tempo = Tempo.replace(/\like/g,"");
+		Tempo = Tempo.replace(/\into/g,"");
+		Tempo = Tempo.replace(/\updat/g,"");
+		Tempo = Tempo.replace(/\select/g,"");	
+		Tempo = Tempo.replace(/\delet/g,"");	
+		Tempo = Tempo.replace(/\HTTPS/g,"");
+		Tempo = Tempo.replace(/\HTTP/g,"");
+		Tempo = Tempo.replace(/\FTP/g,"");
+		Tempo = Tempo.replace(/\CGI/g,"");
+		Tempo = Tempo.replace(/\.JSP/g,"");
+		Tempo = Tempo.replace(/\.EXE/g,"");
+		Tempo = Tempo.replace(/\SCRIPT/g,"");
+		Tempo = Tempo.replace(/\FUNCTION/g,"");
+		Tempo = Tempo.replace(/\INPUT/g,"");
+		Tempo = Tempo.replace(/\WHERE/g,"");
+		Tempo = Tempo.replace(/\LIKE/g,"");
+		Tempo = Tempo.replace(/\INTO/g,"");
+		Tempo = Tempo.replace(/\UPDAT/g,"");
+		Tempo = Tempo.replace(/\SELECT/g,"");	
+		Tempo = Tempo.replace(/\DELET/g,"");
+		
+		LsControl.value = Tempo;	
+}
+
+function allTrim(valor){
+    try {
+        return valor.replace(/\u00A0/gi, ' ').replace(/^\s*|\s*$/g, '');
+    } catch (e) {
+        return valor;
+    }
+}
+
+/*
+	funcion que sirve para cortar el texto de un campo  al tamño de su maximo definido
+*/
+function maxLengthToTextArea(objeto,size) {
+	n = objeto.value.length;
+	if (n > size) {
+	  objeto.value = objeto.value.substring(0, size);
+	}
+}
+
+function aMayusculas(field, e) {
+	var nav = window.Event ? true : false;
+	var key = nav ? e.which : e.keyCode;
+	
+	if ((key <= 13) || (key == 16) || (key == 35) ||
+			(key == 36) || (key == 37) || 
+			(key == 39) || (key == 46)) {
+		//Flechas 37=izq 39=der, 36=inicio, 35=fin, 
+		//13=enter, 8=backsapce, 46=supr
+		return true;
+	}
+	
+	if (allTrim(field.value).length <= 0) {
+		field.value = allTrim(field.value.toUpperCase());
+	} else {
+		
+		if (field.value.indexOf(" ") == 0) {
+			
+			field.value = allTrim(field.value.toUpperCase());
+			
+		} else if (field.value.indexOf("  ") > -1) {
+			
+			field.value = allTrim(field.value.toUpperCase().replace(/\s{2,}/g, ' '));
+			
+		} else {
+			
+			field.value = field.value.toUpperCase().replace(/\s{2,}/g, ' ');
+		}
+	}
+}
+
+/*
+Función que bloquea los caracteres no permitidos en el evento onkeypress para el sistema de puntos,
+excepto letras mayúsculas y minúsculas con o sin acento y números.
+*/
+function caracteresNoPermitidosPts(e){
+	var nav = window.Event ? true : false;
+	var key = nav ? e.which : e.keyCode;
+	
+	if (key <= 13) return true;
+	patron =/[A-Za-zñáéíóúüÑÁÉÍÓÚÜ0-9\s]/;
+	return patron.test(String.fromCharCode(key));
+}
+
+/*
+	Funcion que bloquea los caracteres no permitidos en el evento onkeypress
+*/
+function caracteresNoPermitidos(e){
+	var nav = window.Event ? true : false;
+	var key = nav ? e.which : e.keyCode;
+	
+	if (key <= 13) return true;
+	patron =/[A-Za-zñáéíóúüÑÁÉÍÓÚÜ0-9\*\s]/;
+	return patron.test(String.fromCharCode(key)); 
+}
+
+/*
+Funcion que bloquea los caracteres no permitidos en el evento onkeypress
+*/
+function caracteresNoPermitidosRFC(e){
+var nav = window.Event ? true : false;
+var key = nav ? e.which : e.keyCode;
+
+if (key <= 13) return true;
+patron =/[A-Za-z0-9]/;
+return patron.test(String.fromCharCode(key)); 
+}
+
+/*Función que bloquea los caracteres no permitidos, excepto puntos, 
+ * guion bajo, comas, guiones intermedios y signo de número en el evento onkeypress
+*/
+function caracteresNoPermitidos3(e){
+	var nav = window.Event ? true : false;
+	var key = nav ? e.which : e.keyCode;
+	
+	if (key <= 13) return true;
+	patron =/[A-Za-zñáéíóúüÑÁÉÍÓÚÜ0-9\*\.\,\-\#\_\s]/;
+	return patron.test(String.fromCharCode(key)); 
+}
+
+/*Función que bloquea los caracteres permitidos para correo
+*/
+function caracteresNoPermitidosCorreo(e){
+	var nav = window.Event ? true : false;
+	var key = nav ? e.which : e.keyCode;
+	
+	if (key <= 13) return true;
+	patron =/[A-Za-z0-9\.\@\-\_]/;
+	return patron.test(String.fromCharCode(key)); 
+}
+
+
+
+
+
+/*
+ * Funcion que solo acepta numeros y letras sin acento
+ */
+function caracteresNoPermitidos2(e) {
+	var nav = window.Event ? true : false;
+	var key = nav ? e.which : e.keyCode;
+	
+	if (key <= 13) return true;
+	patron =/[A-Za-z0-9\s]/;
+	return patron.test(String.fromCharCode(key)); 
+}
+
+function caracteresEsp(){
+
+	if ( event.keyCode == 34 || event.keyCode == 38 
+		 || event.keyCode == 39 || event.keyCode == 44
+		 || event.keyCode == 58 || event.keyCode == 59
+		 || event.keyCode == 60 || event.keyCode == 62
+		 || event.keyCode == 91 || event.keyCode == 92
+		 || event.keyCode == 93 || event.keyCode == 94
+		 || event.keyCode == 96 || event.keyCode == 123
+		 || event.keyCode == 124|| event.keyCode == 125 
+		 || event.keyCode == 168|| event.keyCode == 170 
+		 || event.keyCode == 172|| event.keyCode == 180 
+		 || event.keyCode == 186|| event.keyCode == 199 
+		 || event.keyCode == 231  ) {			 
+		
+		 	event.keyCode=0;				 
+	}
+	
+}
+
+function soloNumeros(){
+		if ( event.keyCode == 46 || event.keyCode == 8 ) {
+		}
+		else {
+			if (event.keyCode < 48 || event.keyCode > 57 ) {
+				event.keyCode=0;	
+			}	
+		}
+		
+}
+
+function num_Decimales(e, objeto) {
+	var nav = window.Event ? true : false;
+	var key = nav ? e.which : e.keyCode;
+	
+	if (key <= 13) return true;
+	patron =/[0-9.]/;
+	
+	if(objeto.value.indexOf('.') != -1 && key == 46){
+	    return false;
+	} else {
+		return patron.test(String.fromCharCode(key));
+	}
+}
+
+function bloqueaPagSimple(){
+     $.blockUI({ message: '<table><tr><td><img src="img/ajax-loader.gif" /></td></tr><table>' });
+}
+
+
+function bloqueaPag(){
+    if ($('#_CZZ').length == 0) {
+
+        $.blockUI({ message: '<table><tr><td><img src="img/ajax-loader.gif" /></td><td><p>Por Favor espere...</p><td></tr><table>' });    
+    }
+	
+}
+
+function desbloqueaPag(forzar){
+    if ($('#_CZZ').length == 0 || forzar == true) {
+        $.unblockUI({onUnblock: function(){ if(msgERROR != ""){muestraError(msgERROR); msgERROR = "";}}});    
+    }
+}
+
+function desbloqueaPagRecCves(){
+  $.unblockUI({onUnblock: function(){ if(msgERROR != ""){muestraError(msgERROR); msgERROR = ""; window.close();}}});
+}
+
+function bloqueaElemento(){
+     $('#'+_elementoBloq).block({ message: '<table><tr><td><img src="img/ajax-loader.gif" /></td><td><p></p><td></tr><table>' });
+}
+
+
+function desbloqueaElemento(){
+     $('#'+_elementoBloq).unblock({onUnblock: function(){ if(msgERROR != ""){muestraError(msgERROR); msgERROR = "";}}});
+}
+
+
+/*
+	Función que valida  un campo como tipo importe
+	obj: campo que contiene la cantidad   validar
+	hace la validacion para un importe de  13 enteros  y 2 decimales
+*/
+function validaImporte(obj){
+	var Msg = "";
+	var msj = "";
+
+	msj += ValidaCampos('Monto',obj,105,0,0,0);
+   	Msg += ValidaCampos('',obj,2,13,2,0);
+   	if(msj != ''){	muestraError(msj);	obj.value = "";  	
+   	}   	
+	if(Msg != ''){
+	  obj.value = "";
+	  muestraError(Msg);   		
+	}
+}
+
+
+/** función par hacer un submit sin repetir codigo en la jsp
+	cmd: nombre del cmd
+	cntl_codigo: codigo
+	cntl_estado: estado
+	forma: nombre del formulario ---> document._frm...
+	pant: pantalla que se va a enviar #_frm...
+	tar: parte del foromulario donde se van a hacer los cambios
+*/
+function submitMe(cmd, cntl_codigo, cntl_estado, forma, pant, tar){
+	//alert("submitME "+ cmd + " " + cntl_codigo + " " + cntl_estado+ " "  + forma + " " + pant + " " + tar)
+	var options = {        			
+		target: tar,// target element(s) to be updated with server response
+        success: desbloqueaPag,  			// post-submit callback		        
+        beforeSubmit:  bloqueaPag,  // pre-submit callback 
+        type: 'POST',
+  		error:   function(){top.location.href='Error.jsp'}
+    };	
+    forma.cmd.value = cmd;
+	forma.cntl_estado.value = cntl_estado;
+	forma.cntl_codigo.value = cntl_codigo;
+	$(pant).ajaxSubmit(options);
+}
+
+/** funci�n par hacer un submit al contenedor sin repetir codigo en la jsp
+cmd: nombre del cmd
+cntl_codigo: codigo
+cntl_estado: estado
+forma: nombre del formulario ---> document._frm...
+pant: pantalla que se va a enviar #_frm...
+*/
+function submitMeContenedor(cmd, cntl_codigo, cntl_estado, forma , pant){
+	submitMe(cmd, cntl_codigo, cntl_estado, forma, pant, "#_Contenedor");
+}
+
+/** MGGD
+	función par hacer un submit sin bloq  y desbloq pagina para el evento de paginación
+	cmd: nombre del cmd
+	cntl_codigo: codigo
+	cntl_estado: estado
+	forma: nombre del formulario ---> document._frm...
+	pant: pantalla que se va a enviar #_frm...
+	tar: parte del foromulario donde se van a hacer los cambios
+*/
+function submitPag(cmd, cntl_codigo, cntl_estado, forma , pant , tar){
+	var options = {        			
+		target: tar,// target element(s) to be updated with server response
+        type: 'POST',
+  		error:   function(){top.location.href='Error.jsp'}
+    };			
+    forma.cmd.value = cmd;
+	forma.cntl_estado.value = cntl_estado;
+	forma.cntl_codigo.value = cntl_codigo;
+	$(pant).ajaxSubmit(options);
+}
+
+
+/*
+	utiliza la funcion ValidaCampos par hacer la validacion de fecha
+	obj: objeto que contiene la fecha
+	m: nombre del campo
+*/
+function validarFecha(obj,m){
+	var msj = '';
+	
+	msj += ValidaCampos(m,obj,104,0,0,0);
+	msj += ValidaCampos(m,obj,103,0,0,0);
+
+	if(msj != ''){
+		muestraError(m);
+		obj.value = "";
+		obj.focus();
+	}
+	return msj;
+}
+
+
+/**
+Recibe dos fechas fi (fecha inicial) ff (fecha final)
+Regresa 0 si las fechas son iguales
+ Regresa 1 si fi es menor que ff
+Regresa 2 si fi es mayor que ff
+**/
+function comparaFechas(fi,ff){
+  var dia1 =fi.substring(0,2);
+  var mes1 =fi.substring(3,5);
+  var anio1=fi.substring(6,10);
+
+  var dia2 =ff.substring(0,2);
+  var mes2 =ff.substring(3,5);
+  var anio2=ff.substring(6,10);
+
+  dia1 = parseInt(dia1,10);
+  mes1 = parseInt(mes1,10);
+  anio1= parseInt(anio1,10);
+
+  dia2 = parseInt(dia2,10);
+  mes2 = parseInt(mes2,10);
+  anio2= parseInt(anio2,10);
+
+//	alert ("dia1: "+ dia1 + " mes1: " + mes1 + " anio1: " + anio1+"\ndia2: "+ dia2 + " mes2: " + mes2 + " anio2: " + anio2);
+
+        /*iniciamos comparando los años*/
+  if (anio1<anio2){
+    return 1;
+  }
+        /*Ahora se comparan los meses*/
+  if ((anio1==anio2) && (mes1<mes2)){
+    return 1;
+  }
+        /*Ahora se comparan los dias*/
+  if ((anio1==anio2) && (mes1==mes2) && (dia1<dia2)){
+    return 1;
+  }
+  if ((anio1==anio2) && (mes1==mes2) && (dia1==dia2)){
+    return 0;
+  }
+  return 2;
+}
+
+/**
+Recibe dos horas horaIni y horaFin
+Regresa 0 si las horas son iguales
+ Regresa 1 si horaIni es menor que horaFin
+Regresa 2 si horaIni es mayor que horaFin
+**/
+//********* valida  horas **************************//
+function comparaHoras(horaIni, horaFin){
+  var hr1  = horaIni.substring(0,2);
+  var min1 = horaIni.substring(3,5);
+  var seg1 = horaIni.substring(6,8);
+  
+  var hr2  = horaFin.substring(0,2);
+  var min2 = horaFin.substring(3,5);
+  var seg2 = horaFin.substring(6,8);
+  
+  if(hr2 < hr1)
+  	return 2;
+  
+  if((hr1 == hr2) && (min2 < min1))
+  	return 2;	
+  
+  if((hr1 == hr2) && (min2 == min1))
+  	return  0;
+  
+  return 1;	
+}
+
+
+/**
+ * Función que compara dos fechas
+ * Si la fecha inicial es mayor o igual que la fecha Fin
+ 	nombreIni: nombre de la fecha inicial
+ 	fechaIni: fecha inicial
+ 	nobreFin: nombre d ela fecha fin
+ 	fechaFin: fecha fin
+ * @return mensaje
+ */
+function ValidarFechasMayorIgual(nombreIni, fechaIni, nombreFin, fechaFin){
+  var fechaInicial = fechaIni.value;
+  var fechaFinal   = fechaFin.value;
+  var Msg='';
+  if(fechaIni.value != ''){
+    var temp=comparaFechas(fechaInicial,fechaFinal);
+
+    if (temp==1){
+      Msg += nombreIni + ' debe ser mayor o igual que la '+ nombreFin +'.\r';
+    }
+  }
+  return Msg;
+}
+
+/*
+	función que valida si una fecha es mayor a la actual 
+	nombre: nombre de la fecha a comparar
+	fechaVal: fecha a comparar
+	regresa mensaje de validación
+*/
+function ValidarMayorFechaActual(nombre, fechaVal){
+  var fechaValidar = fechaVal.value;
+  var Msg='';
+  if(fechaVal.value != ''){
+    var mydate=new Date();
+    var year=mydate.getYear();
+    if (year < 1000)
+      year+=1900;
+    var day=mydate.getDay();
+    var month=mydate.getMonth()+1;
+    if (month<10)
+      month="0"+month;
+    var daym=mydate.getDate();
+    if (daym<10)
+      daym="0"+daym;
+
+    var fechaActual = 	daym+"/"+month+"/"+year;
+
+    var temp=comparaFechas(fechaValidar,fechaActual);
+    if ((temp==1) || (temp==0)){
+      Msg += nombre + ' no puede ser\r';
+    }
+  }
+  return Msg;
+}
+
+/*
+función que valida si una fecha es menor a la actual 
+nombre: nombre de la fecha a comparar
+fechaVal: fecha a comparar
+regresa mensaje de validación
+*/
+function ValidarMenorFechaActual(nombre, fechaVal){
+var fechaValidar = fechaVal.value;
+var Msg='';
+if(fechaVal.value != ''){
+var mydate=new Date();
+var year=mydate.getYear();
+if (year < 1000)
+  year+=1900;
+var day=mydate.getDay();
+var month=mydate.getMonth()+1;
+if (month<10)
+  month="0"+month;
+var daym=mydate.getDate();
+if (daym<10)
+  daym="0"+daym;
+
+var fechaActual = 	daym+"/"+month+"/"+year;
+
+var temp=comparaFechas(fechaValidar,fechaActual);
+
+
+if ((temp==1)){
+  Msg += nombre + ' no puede ser\r';
+}
+}
+return Msg;
+}
+
+// validación de moneda
+// Comprueba cualquier número con un punto decimal y hasta dos dígitos decimales. 
+function validaMoneda(txt) {	
+	var re=/^\d+(\.\d{1,2})?$/; 
+	if (re.test(txt.value)) return true; 		// if (re.test(txt.value)) return true; 
+		//alert('Cantidad incorrecta: debe introducir un número, opcionalmente seguido de un punto decimal y uno o dos decimales.'); 
+		txt.focus(); 
+	return false; 
+}
+
+/*
+	Función que da formato a una cadena numérica.
+	-prefix: 
+	-objeto: campo de texto que contiene la cadena a formatear
+*/
+function formatNumber(prefix,objeto){			
+		if(objeto.value == '' ){
+		   objeto.value= "0"
+		}
+		var num = objeto.value;		
+		num=num.replace(prefix,'');	
+		prefix = prefix || '';
+		num += '';
+		var splitStr = num.split('.');
+		var splitLeft = splitStr[0];
+		var splitRight = splitStr.length > 1 ? '.' + splitStr[1] : '';
+		var regx = /(\d+)(\d{3})/;
+		while (regx.test(splitLeft)) {
+		splitLeft = splitLeft.replace(regx, '$1' + ',' + '$2');
+	}
+		objeto.value = prefix + splitLeft + splitRight; 	
+}
+
+function getFormatNumber(num, prefix=''){
+		num=num.replace(prefix,'');	
+		prefix = prefix || '';
+		num += '';
+		var splitStr = num.split('.');
+		var splitLeft = splitStr[0];
+		var splitRight = splitStr.length > 1 ? '.' + splitStr[1] : '';
+		var regx = /(\d+)(\d{3})/;
+		while (regx.test(splitLeft)) {
+		splitLeft = splitLeft.replace(regx, '$1' + ',' + '$2');
+	}
+		return prefix + splitLeft + splitRight; 	
+}
+
+function unformatNumber( objeto) {	
+	objeto.value = objeto.value.replace(/([^0-9\.\-])/g,'')*1;
+	
+		
+} 
+
+function vacio(valor){
+  if(valor.replace(/\s/g, "") == ""){
+    return true;
+  }else{
+    return false;
+  }
+}
+
+
+function txtNumeros(){
+    		
+  		var KeyAscii = event.keyCode;		
+    
+     		if((KeyAscii < 8) || (KeyAscii > 8) && (KeyAscii < 45) || (KeyAscii > 57) ||
+   			KeyAscii == (",").charCodeAt(0) || KeyAscii == ("(").charCodeAt(0) || KeyAscii == (")").charCodeAt(0) ||
+      		KeyAscii == ("'").charCodeAt(0) || KeyAscii == ("#").charCodeAt(0) || KeyAscii == ("&").charCodeAt(0) ||
+      		KeyAscii == ("/").charCodeAt(0) || KeyAscii == ("-").charCodeAt(0)){
+      		event.keyCode = 0;
+     		}
+}
+function txtNumerosSin(){
+    		
+  		var KeyAscii = event.keyCode;		
+    
+     		if((KeyAscii < 8) || (KeyAscii > 8) && (KeyAscii < 45) || (KeyAscii > 57) ||
+   			KeyAscii == (",").charCodeAt(0) || KeyAscii == ("(").charCodeAt(0) || KeyAscii == (")").charCodeAt(0) ||
+      		KeyAscii == ("'").charCodeAt(0) || KeyAscii == ("#").charCodeAt(0) || KeyAscii == ("&").charCodeAt(0) ||
+      		KeyAscii == ("/").charCodeAt(0) || KeyAscii == ("-").charCodeAt(0)){
+      			if(KeyAscii != 13)
+      				event.keyCode = 0;
+     		}
+}
+
+function txtFechas(e){
+	var nav = window.Event ? true : false;
+	var key = nav ? e.which : e.keyCode;
+	return (key <= 13 || (key >= 48 && key <= 57) || key == ("/").charCodeAt(0)); 
+}
+
+function txtFechasSin(){
+	    		
+	var KeyAscii = event.keyCode;		
+    
+  		if((KeyAscii < 8) || (KeyAscii > 8) && (KeyAscii < 45) || (KeyAscii > 57) ||
+   		KeyAscii == (".").charCodeAt(0) || KeyAscii == (",").charCodeAt(0) || KeyAscii == ("(").charCodeAt(0) || KeyAscii == (")").charCodeAt(0) ||
+   		KeyAscii == ("'").charCodeAt(0) || KeyAscii == ("#").charCodeAt(0) || KeyAscii == ("&").charCodeAt(0) ||
+   		KeyAscii == ("-").charCodeAt(0) || KeyAscii == 32){
+   			if(KeyAscii != 13)
+   	    		event.keyCode = 0;
+  		}
+}
+function AlfaNumerico(){
+
+	if( event.keyCode >= 97 && event.keyCode <= 122){
+	    event.keyCode = event.keyCode - 32; /*Sin Minusculas*/
+	//	event.keyCode = event.keyCode;		/*Con Minusculas*/			       
+	}
+}	
+		
+
+
+/** 
+funcion para abrir  un dialogo 
+- svlt: nombre del servlet 
+- cmd: nombre del cmd que se va a usar
+- params: parametros
+- jsp: jsp a desplegar en el dialogo
+- width: ancho del dialogo
+- height: alto del dialogo
+- 
+**/
+
+function OpenShowModalDialog(svlt,cmd,params,jsp,width,height,registroActual){
+  try{
+ 
+  $.ajax({
+          type: svlt,
+          url: cmd,
+          data: params,
+          beforeSend: function(objeto){
+          },         
+         complete: function(objeto, exito){
+              if(exito=="success"){
+               OpenWindows(jsp,width,height,registroActual);
+              }
+          },
+          error: function(objeto, quepaso, otroobj){
+              muestraError("No fue posible procesar la petici\u00f3n.");
+          }
+  });
+ 
+ }catch(e){}
+}
+
+
+/// ADC
+
+  function empty(dom) {
+  	while(dom.firstChild) {
+		dom.removeChild(dom.firstChild);
+	}
+  }
+
+// PCRE
+var acentos = {
+	n:-999994,
+	a:-999995,
+	e:-999996,
+	i:-999997,
+	o:-999998,
+	u:-999999
+};
+
+//	FACEVESL
+// FUNCION QUE VALIDA MAS DE TRES CARACTERES CONSECUTIVOS ALFABETICOS O NUMERICOS
+function validaConsecutivos(input) {
+    var asciiChar = 0;
+    var prevAsciiChar = -1;
+    var consecutivos = 0;
+
+    for (var i = 0; i < input.length; i++) {
+    	asciiChar = input.charCodeAt(i);
+    	if ((asciiChar >= 97 && asciiChar <= 122) ||
+    		(asciiChar >= 48 && asciiChar <= 57)) {
+	        if ((prevAsciiChar + 1) == asciiChar) {
+	            if (++consecutivos >= 3) {
+	                return true;
+	            }
+	        } else {
+	            consecutivos = 1;
+	        }
+    	} else {
+    		consecutivos = 0;
+    	}
+        prevAsciiChar = asciiChar;
+    }
+    return false;
+}
+
+//  MGGD
+// FUNCION QUE CUENTA REPETIDOS EN UNA CADENA
+
+function cuentaRepetidos(cadena){
+	var car1 = '';
+	var car2 = '';
+	var cont = 1;
+	for (var i	=0;i<cadena.length; i++)
+	{
+	   car1 = cadena.substring(i,i+1);
+	   car2 = cadena.substring(i+1, i+2);
+	 //  alert("car1=" + car1 + " car2=" + car2);
+   
+	   if(car1 == car2){
+	   		cont = cont +1;
+	   }
+	}
+	return cont;
+}
+
+//MERD
+// Funcion que permite solo la captura de números, sin punto
+function soloEnteros(){
+	if ( event.keyCode == 8) {
+		}
+		else {
+			if (event.keyCode < 48 || event.keyCode > 57 ) {
+				event.keyCode=0;
+			}	
+		}	
+		
+}
+
+function validaCorreo2(objeto){
+	
+	if (objeto.value.length > 0){
+		
+			var pattern = /^[A-Za-z0-9][A-Za-z0-9\_\-\.]*[A-Za-z0-9]\@[A-Za-z0-9][A-Za-z0-9\_\-]*\.[A-Za-z0-9\_\-\.]+[A-Za-z]$/i;
+		    if(!objeto.value.match(pattern))
+		    	objeto.value = "";
+
+		}else{
+			objeto.value = "";
+		}  
+}
+
+function validaCorreo(pInput){
+	var icont = 0;
+	var bResultado  = true;
+	var bEncontrado = true;
+	var nPunto      = 0;
+	var nPos        = 0;
+	if (pInput.length > 0){
+		if (pInput.indexOf("@", 1) < 0){
+	    	bResultado = false;
+	    }
+	    if (pInput.indexOf(".", 1) < 0 ||  pInput.indexOf("..", 1) >= 0){
+	     	bResultado = false;
+	    }
+	    nPos = pInput.indexOf("@", 1);
+	    if (nPos>=0){
+	    }else{
+	    	nPos = 1;	
+	    } 
+	    
+	    if (pInput.indexOf(".", nPos) < 0){
+	    	bResultado = false;
+	    }
+	    if (pInput.indexOf("@.", 1) >= 0 ||  pInput.indexOf(".@", 1) >= 0){
+	      	bResultado = false;
+	    }
+	    if (pInput.indexOf("@", 1) == pInput.length || pInput.indexOf(".", pInput.length) == pInput.length){
+	      	bResultado = false;
+	    }
+	    for (icont = pInput.indexOf("@", 1) + 1; icont < pInput.length; icont++){
+	      	if (pInput.substring(icont, 1) == "."){
+	        	nPunto = nPunto + 1;
+	        	if (nPunto > 2){
+	          		bResultado = false;
+	          		break;
+	        	}
+	      	}
+	    }
+	}else{
+		bResultado = false;
+	}  
+	return bResultado;
+}
+/*Función que valida url*/
+function validaWeb(objeto){	
+	
+	if (objeto.value.length > 0){
+	
+		var pattern = /[A-Za-z0-9\-]+(\.[A-Za-z]{2,4})+(:(0-9)*)*(\/.*)?([A-Za-z0-9\-\.\:\=\?\,\'\/\\\+\&\%\$\#\_]*)?$/;
+		
+		if(!objeto.value.match(pattern))
+	    	objeto.value = "";
+
+	}else{
+		objeto.value = "";
+	}  
+}
+
+function validaConsecutivo(pInput){
+	var bResultado  = true;
+	
+	if (pInput.length > 0){
+		for (icont = 0 ; icont <= pInput.length; icont++){
+			if(icont == 0){						
+				if(pInput.substring(icont + 1, 2) == pInput.substring(icont, 1) 
+					&& pInput.substring(icont + 2, 3) == pInput.substring(icont, 1)){
+					bResultado = false;
+					break;
+				}
+			}else if(icont == pInput.length){				
+				if(pInput.substring(pInput.length -1, icont -2) == pInput.substring(pInput.length, icont -1) 
+					&& pInput.substring(pInput.length -2, icont -3) == pInput.substring(pInput.length, icont -1)){					
+					bResultado = false;
+					break;
+				}
+			}else{
+				if(pInput.substring(icont,icont - 1) == pInput.substring(icont,icont + 1) 
+					&& pInput.substring(icont + 1 ,icont + 2) == pInput.substring(icont,icont + 1)){
+					bResultado = false;
+					break;
+				}
+			}      	
+	    }	
+	}else{
+		bResultado = false;
+	}  
+	return bResultado;
+}
+
+function replaceAll( text, busca, reemplaza ){
+  while (text.toString().indexOf(busca) != -1)
+      text = text.toString().replace(busca,reemplaza);
+  return text;
+}
+
+function numeros(e) {
+	var nav = window.Event ? true : false;
+	var key = nav ? e.which : e.keyCode;
+	return (key <= 13 || (key >= 48 && key <= 57)); 
+}
+
+function validaFecha(fecha) {
+	if (fecha.value != "") {
+		if (ValFecha(fecha, 1) != 1) {
+			fecha.value = "";
+			fecha.focus();
+			return;
+		}
+	}		
+}
+
+/**
+ * Función para valir que no acepte valor cero.
+ * @param objeto
+ * @returns
+ */
+function validaValorCero(objeto) {
+	
+	var valorAux = 0.0;
+	var valorInicial = objeto.value;
+	
+	if(valorInicial.length > 0) { 
+		if (objeto.value.indexOf('.') < 0) {
+			//No tiene punto
+			//Hacer entero el valor en caso de que sea mas de un cero.
+			try {
+				valorAux = parseFloat(objeto.value.replace(/,/g,""));
+				objeto.value = valorAux/1;
+			} catch (e) {
+				objeto.value = '';
+			}
+		}
+		
+		if((objeto.value == '0') || (objeto.value == '0.00')) {
+			objeto.value = '';
+		} else {
+			objeto.value = valorInicial;
+		} 
+		
+	}
+}
+
+/**
+ * Función para convertir n ceros a un cero.
+ * @param objeto
+ * @returns valor convertido
+ */
+function convierteAUnCero(objeto) {
+	
+	if (!vacio(objeto.value)) {
+		if (objeto.value.indexOf('.') < 0) {
+			//No tiene punto
+			//Hacer entero el valor en caso de que sea mas de un cero.
+			var valor = objeto.value;
+			try {
+				objeto.value = valor/1;
+			} catch (e) {
+				objeto.value = '';
+			}
+		}
+	}	
+}
+
+function foco(item){
+	 var father = $(item).parent();
+	 father.children().click(function(){
+		$(this).val(''); 
+	 });
+	 var input = father.next().children();
+	 input.val('');
+	 input.focus();
+}

